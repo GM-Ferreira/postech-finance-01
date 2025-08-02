@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import bannerInfo from "@/assets/banners/banner-01.png";
 import bannerAd from "@/assets/banners/banner-02.png";
 
