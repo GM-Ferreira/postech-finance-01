@@ -6,9 +6,10 @@ import Image from "next/image";
 
 import { useAuth } from "@/hooks/useAuth";
 
-import { Modal } from "@/components/ui/Modal";
-import { User } from "@/services/AuthService";
 import bannerLogin from "@/assets/banners/banner-login.png";
+import { Modal } from "@/components/ui/Modal";
+import { Input } from "@/components/ui/Input";
+import { User } from "@/services/AuthService";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -57,22 +58,21 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         <form className="mt-6 w-full text-left" onSubmit={handleLogin}>
           <label className="block">
             <span className="text-black font-bold text-base">Email</span>
-            <input
+            <Input
               type="email"
+              placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
-              placeholder="seu@email.com"
             />
           </label>
+
           <label className="mt-4 block">
             <span className="text-black font-bold text-base">Senha</span>
-            <input
+            <Input
               type="password"
+              placeholder="Sua senha"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
-              placeholder="Sua senha"
             />
           </label>
 

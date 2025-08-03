@@ -1,14 +1,15 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { useAuth } from "@/hooks/useAuth";
 
+import bannerSignUp from "@/assets/banners/banner-signup.png";
 import { RegistrationService } from "@/services/RegistrationService";
 import { Modal } from "@/components/ui/Modal";
-import bannerSignUp from "@/assets/banners/banner-signup.png";
-import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/Input";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -79,9 +80,8 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
         <form className="mt-6 w-full text-left" onSubmit={handleSignUp}>
           <label className="block">
             <span className="text-black font-bold text-base">Nome</span>
-            <input
+            <Input
               type="text"
-              className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
               placeholder="Digite seu nome completo"
               value={newUser.name}
               onChange={(e) =>
@@ -96,9 +96,8 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
 
           <label className="mt-4 block">
             <span className="text-black font-bold text-base">Email</span>
-            <input
+            <Input
               type="email"
-              className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
               placeholder="Digite seu email"
               value={newUser.email}
               onChange={(e) =>
@@ -113,9 +112,8 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
 
           <label className="mt-4 block">
             <span className="text-black font-bold text-base">Senha</span>
-            <input
+            <Input
               type={showPassword ? "text" : "password"}
-              className="mt-1 block w-1/2 rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
               placeholder="Digite sua senha"
               value={newUser.password}
               onChange={(e) =>
