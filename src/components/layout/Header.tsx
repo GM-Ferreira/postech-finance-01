@@ -2,25 +2,18 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
+import { AuthService } from "@/services/AuthService";
+import { RegistrationService } from "@/services/RegistrationService";
 
 import { LogoIcon } from "../icons";
 import { Modal } from "../ui/Modal";
 
 import bannerSignUp from "@/assets/banners/banner-signup.png";
 
-type User = {
-  name: string;
-};
-
-type NewUser = {
-  name: string;
-  email: string;
-  password: string;
-};
-
 type LoggedInViewProps = {
-  user: User;
+  user: { name: string };
   onLogout: () => void;
 };
 
@@ -61,22 +54,44 @@ const LoggedOutView: React.FC<LoggedOutViewProps> = ({ onLogin, onSignUp }) => (
 );
 
 const Header = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const authService = useMemo(() => new AuthService(), []);
+  const registrationService = useMemo(() => new RegistrationService(), []);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(authService.isLoggedIn);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [isTermsChecked, setIsTermsChecked] = useState(false);
-  const [newUser, setNewUser] = useState<NewUser>({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [newUser, setNewUser] = useState(registrationService.user);
+  const [isTermsChecked, setIsTermsChecked] = useState(
+    registrationService.termsAccepted
+  );
 
-  const user = { name: "Guilherme" };
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  const handleSignUp = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault(); // Impede o recarregamento da página
+    setIsLoading(true);
+    setError(null);
 
-    console.log("Formulário NÃO foi enviado. Dados:", { newUser });
+    try {
+      await registrationService.submit();
+
+      alert(`Conta para ${newUser.name} criada com sucesso! (Simulação)`);
+
+      setIsModalOpen(false);
+    } catch (err: unknown) {
+      console.error("Erro no cadastro:", err);
+
+      let errorMessage = "Não foi possível criar a conta. Tente novamente.";
+
+      if (typeof err === "object" && err !== null && "message" in err) {
+        errorMessage = String((err as { message: unknown }).message);
+      }
+
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -88,10 +103,13 @@ const Header = () => {
 
         <div className="flex items-center space-x-4">
           {isLoggedIn ? (
-            <LoggedInView user={user} onLogout={() => setIsLoggedIn(false)} />
+            <LoggedInView
+              user={{ name: "Guilherme" }}
+              onLogout={() => authService.logout(setIsLoggedIn)}
+            />
           ) : (
             <LoggedOutView
-              onLogin={() => setIsLoggedIn(true)}
+              onLogin={() => authService.login(setIsLoggedIn)}
               onSignUp={() => setIsModalOpen(true)}
             />
           )}
@@ -119,14 +137,14 @@ const Header = () => {
                 type="text"
                 className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
                 placeholder="Digite seu nome completo"
-                onChange={(e) => {
-                  setNewUser((prev) => {
-                    return {
-                      ...prev,
-                      name: e.target.value,
-                    };
-                  });
-                }}
+                value={newUser.name}
+                onChange={(e) =>
+                  registrationService.updateField(
+                    "name",
+                    e.target.value,
+                    setNewUser
+                  )
+                }
               />
             </label>
 
@@ -136,14 +154,14 @@ const Header = () => {
                 type="email"
                 className="mt-1 block w-full rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
                 placeholder="Digite seu email"
-                onChange={(e) => {
-                  setNewUser((prev) => {
-                    return {
-                      ...prev,
-                      email: e.target.value,
-                    };
-                  });
-                }}
+                value={newUser.email}
+                onChange={(e) =>
+                  registrationService.updateField(
+                    "email",
+                    e.target.value,
+                    setNewUser
+                  )
+                }
               />
             </label>
 
@@ -153,14 +171,14 @@ const Header = () => {
                 type={showPassword ? "text" : "password"}
                 className="mt-1 block w-1/2 rounded-md border-zinc-500 shadow-sm h-12 px-4 bg-white text-zinc-500"
                 placeholder="Digite sua senha"
-                onChange={(e) => {
-                  setNewUser((prev) => {
-                    return {
-                      ...prev,
-                      password: e.target.value,
-                    };
-                  });
-                }}
+                value={newUser.password}
+                onChange={(e) =>
+                  registrationService.updateField(
+                    "password",
+                    e.target.value,
+                    setNewUser
+                  )
+                }
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
@@ -177,7 +195,9 @@ const Header = () => {
                     type="checkbox"
                     className="w-full h-full"
                     checked={isTermsChecked}
-                    onChange={(e) => setIsTermsChecked(e.target.checked)}
+                    onChange={() =>
+                      registrationService.toggleTerms(setIsTermsChecked)
+                    }
                   />
                 </div>
 
@@ -188,13 +208,15 @@ const Header = () => {
               </div>
             </label>
 
+            {error && <p className="mt-4 text-center text-warning">{error}</p>}
+
             <div className="flex w-full  justify-center p-4 mt-4">
               <button
                 type="submit"
                 className="w-36 h-12 rounded-md bg-warning py-2 text-white hover:bg-red-600 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!isTermsChecked}
+                disabled={!isTermsChecked || isLoading}
               >
-                Criar conta
+                {isLoading ? "Criando..." : "Criar conta"}
               </button>
             </div>
           </form>
