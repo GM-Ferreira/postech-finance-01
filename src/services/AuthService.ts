@@ -1,19 +1,34 @@
+import { StorageService } from "./StorageService";
+
+export type User = {
+  name: string;
+  email: string;
+};
 export class AuthService {
-  public isLoggedIn: boolean;
+  private storageService: StorageService;
+  public currentUser: User | null;
 
   constructor() {
-    this.isLoggedIn = false;
+    this.storageService = new StorageService();
+    this.currentUser = this.storageService.getItem<User>(
+      StorageService.AUTH_KEY
+    );
   }
 
-  login(setter: (value: boolean) => void): void {
-    this.isLoggedIn = true;
-    console.log("Usuário logado.");
-    setter(this.isLoggedIn);
+  login(user: User, setter: (user: User | null) => void): void {
+    this.currentUser = user;
+    this.storageService.setItem(StorageService.AUTH_KEY, user);
+    console.log("Usuário salvo no localStorage:", user);
+    setter(this.currentUser);
   }
 
-  logout(setter: (value: boolean) => void): void {
-    this.isLoggedIn = false;
-    console.log("Usuário deslogado.");
-    setter(this.isLoggedIn);
+  logout(setter: (user: User | null) => void): void {
+    this.currentUser = null;
+    this.storageService.removeItem(StorageService.AUTH_KEY);
+    setter(this.currentUser);
+  }
+
+  isLoggedIn(): boolean {
+    return this.currentUser !== null;
   }
 }
