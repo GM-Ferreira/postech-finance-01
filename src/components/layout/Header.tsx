@@ -6,8 +6,9 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 
 import { LogoIcon } from "../icons";
-import { LoginModal } from "../modals/LoginModal";
-import { SignUpModal } from "../modals/SignUpModal";
+import { LoginModal } from "@/components/modals/LoginModal";
+import { SignUpModal } from "@/components/modals/SignUpModal";
+import { StringUtils } from "@/lib/utils/StringUtils";
 
 type LoggedInViewProps = {
   user: { name: string };
@@ -22,7 +23,9 @@ type LoggedOutViewProps = {
 const LoggedInView: React.FC<LoggedInViewProps> = ({ user, onLogout }) => (
   <>
     <div className="flex items-center space-x-2">
-      <span className="font-semibold text-white">Olá, {user.name}</span>
+      <span className="font-semibold text-white">
+        {StringUtils.toPascalCase(user.name)}
+      </span>
     </div>
     <button
       onClick={onLogout}
