@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { RegistrationService } from "@/services/RegistrationService";
 import { Modal } from "@/components/ui/Modal";
 import bannerSignUp from "@/assets/banners/banner-signup.png";
+import { useRouter } from "next/navigation";
 
 interface SignUpModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const router = useRouter();
   const { login } = useAuth();
   const registrationService = useMemo(() => new RegistrationService(), []);
 
@@ -39,9 +41,10 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
 
       login(newUser);
 
-      alert(`Conta para ${newUser.name} criada com sucesso! (Simulação)`);
-
+      alert(`Conta para ${newUser.name} criada com sucesso!`);
       onClose();
+
+      router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Erro no cadastro:", err);
 

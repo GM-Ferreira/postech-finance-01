@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -15,6 +16,7 @@ interface LoginModalProps {
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
+  const router = useRouter();
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -32,8 +34,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       const userToLogin: User = { name, email };
 
       login(userToLogin);
-
       onClose();
+
+      router.push("/dashboard");
     } else {
       setError("Por favor, preencha ambos os campos.");
     }
