@@ -24,7 +24,8 @@ const AppNavigation = () => {
             href={link.href}
             className={`
                 block rounded-lg px-4 py-3 transition-colors
-                ${!isActive ? "hover:bg-gray-200" : ""}
+                self-center
+                ${!isActive ? "md:hover:bg-gray-200 hover:bg-success/50" : ""}
               `}
           >
             <span
