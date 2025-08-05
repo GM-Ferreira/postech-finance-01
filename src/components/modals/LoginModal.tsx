@@ -37,7 +37,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       login(userToLogin);
       onClose();
 
-      router.push("/dashboard");
+      router.replace("/home");
     } else {
       setError("Por favor, preencha ambos os campos.");
     }

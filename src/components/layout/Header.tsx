@@ -5,10 +5,9 @@ import { useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
-import { LogoIcon } from "../icons";
+import { LogoIcon, AvatarIcon } from "../icons";
 import { LoginModal } from "@/components/modals/LoginModal";
 import { SignUpModal } from "@/components/modals/SignUpModal";
-import { StringUtils } from "@/lib/utils/StringUtils";
 
 type LoggedInViewProps = {
   user: { name: string };
@@ -23,13 +22,12 @@ type LoggedOutViewProps = {
 const LoggedInView: React.FC<LoggedInViewProps> = ({ user, onLogout }) => (
   <>
     <div className="flex items-center space-x-2">
-      <span className="font-semibold text-white">
-        {StringUtils.toPascalCase(user.name)}
-      </span>
+      <span className="font-semibold text-white">{user.name}</span>
+      <AvatarIcon className="text-warning" />
     </div>
     <button
       onClick={onLogout}
-      className=" text-white px-4 py-2 rounded-md border-2 border-primary hover:border-warning transition-colors"
+      className="text-white px-4 py-2 rounded-md border-2 border-primary hover:border-warning transition-colors"
     >
       Sair
     </button>
@@ -46,7 +44,7 @@ const LoggedOutView: React.FC<LoggedOutViewProps> = ({ onLogin, onSignUp }) => (
     </button>
     <button
       onClick={onLogin}
-      className=" text-white px-4 py-2 rounded-md border-2 border-primary hover:border-white transition-colors"
+      className="text-white px-4 py-2 rounded-md border-2 border-primary hover:border-white transition-colors"
     >
       Já tenho conta
     </button>
@@ -62,7 +60,7 @@ const Header = () => {
   return (
     <header className="bg-primary shadow-md">
       <nav className="container mx-auto flex justify-between items-center p-4">
-        <Link href="/">
+        <Link href="/home">
           <LogoIcon className="text-white" />
         </Link>
 

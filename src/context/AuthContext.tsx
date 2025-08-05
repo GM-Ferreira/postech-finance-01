@@ -1,10 +1,12 @@
 "use client";
 
-import { createContext, useState, useMemo, ReactNode } from "react";
+import { createContext, useState, useMemo, ReactNode, useEffect } from "react";
 
 import { AuthService, User } from "@/services/AuthService";
+import { StringUtils } from "@/lib/utils/StringUtils";
 
 type AuthContextType = {
+  isLoading: boolean;
   isLoggedIn: boolean;
   currentUser: User | null;
   login: (user: User) => void;
@@ -18,9 +20,21 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const authService = useMemo(() => new AuthService(), []);
 
+  const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(
     authService.currentUser
   );
+
+  useEffect(() => {
+    const user = authService.currentUser;
+
+    if (user) {
+      user.name = StringUtils.toPascalCase(currentUser?.name ?? "");
+    }
+
+    setCurrentUser(user);
+    setIsLoading(false);
+  }, [authService, currentUser?.name]);
 
   const login = (user: User) => {
     authService.login(user, setCurrentUser);
@@ -31,6 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const value = {
+    isLoading,
     isLoggedIn: currentUser !== null,
     currentUser,
     login,

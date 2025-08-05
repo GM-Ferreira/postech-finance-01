@@ -4,7 +4,7 @@ export class StringUtils {
   /**
    * Converte uma string para o formato PascalCase.
    * Lida com palavras múltiplas, espaços extras e diferentes capitalizações iniciais.
-   * Ex: "hello world" -> "HelloWorld"
+   * Ex: "hello world" -> "Hello World"
    * @param input A string a ser convertida.
    * @returns A string convertida em PascalCase.
    */

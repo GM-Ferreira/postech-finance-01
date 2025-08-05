@@ -45,7 +45,7 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
       alert(`Conta para ${newUser.name} criada com sucesso!`);
       onClose();
 
-      router.push("/dashboard");
+      router.replace("/home");
     } catch (err: unknown) {
       console.error("Erro no cadastro:", err);
 
