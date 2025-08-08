@@ -1,14 +1,15 @@
 "use client";
 
-import { SetStateAction, useEffect, useMemo, useState } from "react";
+import { SetStateAction, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
+import { useAccount } from "@/context/AccountContext";
+
 import { useAuth } from "@/hooks/useAuth";
-import { AccountService } from "@/services/AccountService";
 import { Account } from "@/models/Account";
 import { EyeIcon, EyeOffIcon } from "@/components/icons";
-import { Transaction } from "@/models/Transaction";
+import { Transaction, TransactionType } from "@/models/Transaction";
 
 const AppNavigation = () => {
   const pathname = usePathname();
@@ -51,15 +52,25 @@ const AppNavigation = () => {
   );
 };
 
-const TransactionItem: React.FC<{ item: Transaction }> = ({ item }) => (
+const transactionTypeDisplayNames: { [key in TransactionType]: string } = {
+  Deposit: "Depósito",
+  Transfer: "Transferência",
+  Payment: "Pagamento",
+};
+
+const TransactionItem: React.FC<{ transaction: Transaction }> = ({
+  transaction,
+}) => (
   <div className="flex justify-between items-center border-b border-success/40 py-3">
     <div>
       <p className="text-sm text-success font-semibold">
-        {item.date.toLocaleDateString("pt-BR", { month: "long" })}
+        {transaction.date.toLocaleDateString("pt-BR", { month: "long" })}
       </p>
-      <p className="text-black">{item.type}</p>
+      <p className="text-black">
+        {transactionTypeDisplayNames[transaction.type]}
+      </p>
       <p className="font-bold text-black">
-        {item.amount.toLocaleString("pt-BR", {
+        {transaction.amount.toLocaleString("pt-BR", {
           style: "currency",
           currency: "BRL",
         })}
@@ -67,7 +78,7 @@ const TransactionItem: React.FC<{ item: Transaction }> = ({ item }) => (
     </div>
     <div className="text-right">
       <p className="text-sm text-gray-500">
-        {item.date.toLocaleDateString("pt-BR")}
+        {transaction.date.toLocaleDateString("pt-BR")}
       </p>
     </div>
   </div>
@@ -140,12 +151,9 @@ export default function ProtectedLayout({
   children: React.ReactNode;
 }) {
   const { isLoggedIn, isLoading, currentUser } = useAuth();
+  const { account, showBalance, setShowBalance } = useAccount();
+
   const router = useRouter();
-
-  const [account, setAccount] = useState<Account | null>(null);
-  const [showBalance, setShowBalance] = useState(false);
-
-  const accountService = useMemo(() => new AccountService(), []);
 
   const now = new Date();
   const weekDay = now.toLocaleDateString("pt-BR", { weekday: "long" });
@@ -156,13 +164,6 @@ export default function ProtectedLayout({
       router.replace("/");
     }
   }, [isLoading, isLoggedIn, router]);
-
-  useEffect(() => {
-    const accountData = accountService.getAccountData();
-    console.log({ accountData });
-
-    setAccount(accountData);
-  }, [accountService]);
 
   if (isLoading) {
     return (
@@ -179,9 +180,9 @@ export default function ProtectedLayout({
     >
       <nav
         className="w-full
-        flex flex-row justify-around items-center py-4 bg-
+        flex flex-row justify-around items-center py-4
         md:flex-col md:justify-start md:items-stretch 
-        md:bg-white md:p-6 md:rounded-lg md:gap-2 md:max-w-44"
+        md:bg-[#f5f5f5] md:p-6 md:rounded-lg md:gap-2 md:max-w-44"
       >
         <AppNavigation />
       </nav>
@@ -201,10 +202,12 @@ export default function ProtectedLayout({
         </div>
       </main>
 
-      <aside className="w-full bg-white p-6 rounded-lg md:min-w-64">
+      <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
         <p className="text-black text-xl font-bold">Extrato</p>
         {account?.transactions.map((transaction) => {
-          return <TransactionItem key={transaction.id} item={transaction} />;
+          return (
+            <TransactionItem key={transaction.id} transaction={transaction} />
+          );
         })}
       </aside>
 
