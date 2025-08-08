@@ -1,4 +1,4 @@
-export type TransactionType = "Depósito" | "Transferência" | "Pagamento";
+export type TransactionType = "Deposit" | "Transfer" | "Payment";
 
 export class Transaction {
   public id: string;

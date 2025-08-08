@@ -25,11 +25,15 @@ export class AccountService {
   private createInitialAccount(): Account {
     const finalAccount = new Account(2500);
     finalAccount.transactions = [
-      new Transaction("Transferência", -500, new Date("2025-07-21")),
-      new Transaction("Depósito", 50, new Date("2025-07-21")),
-      new Transaction("Depósito", 100, new Date("2025-07-21")),
-      new Transaction("Depósito", 150, new Date("2025-07-18")),
+      new Transaction("Transfer", -500, new Date("2025-07-21")),
+      new Transaction("Deposit", 50, new Date("2025-07-21")),
+      new Transaction("Deposit", 100, new Date("2025-07-21")),
+      new Transaction("Deposit", 150, new Date("2025-07-18")),
     ];
+
+    finalAccount.transactions.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
 
     return finalAccount;
   }
@@ -46,7 +50,7 @@ export class AccountService {
           (t) =>
             new Transaction(t.type, t.amount, new Date(t.date), t.description)
         )
-        .sort((a, b) => (a.date > b.date ? 1 : -1));
+        .sort((a, b) => b.date.getTime() - a.date.getTime());
 
       return new Account(savedData.balance, transactions);
     }
@@ -55,5 +59,24 @@ export class AccountService {
     this.saveAccountData(initialAccount);
 
     return initialAccount;
+  }
+
+  public addTransaction(
+    type: TransactionType,
+    amount: number,
+    date: Date,
+    description?: string
+  ): Account {
+    const currentAccount = this.getAccountData();
+
+    currentAccount.addTransaction(type, amount, date, description);
+
+    currentAccount.transactions.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+
+    this.saveAccountData(currentAccount);
+
+    return currentAccount;
   }
 }

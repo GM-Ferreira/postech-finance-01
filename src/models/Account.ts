@@ -1,4 +1,4 @@
-import { Transaction } from "./Transaction";
+import { Transaction, TransactionType } from "./Transaction";
 
 export class Account {
   public balance: number;
@@ -10,5 +10,18 @@ export class Account {
   ) {
     this.balance = initialBalance;
     this.transactions = initialTransactions;
+  }
+
+  addTransaction(
+    type: TransactionType,
+    amount: number,
+    date: Date,
+    description?: string
+  ): void {
+    const newTransaction = new Transaction(type, amount, date, description);
+    this.transactions.push(newTransaction);
+    this.balance += amount;
+
+    console.log("New transaction added and balance updated:", this);
   }
 }
