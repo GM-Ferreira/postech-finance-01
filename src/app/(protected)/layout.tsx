@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Account } from "@/models/Account";
 import { EyeIcon, EyeOffIcon } from "@/components/icons";
 import { Transaction, TransactionType } from "@/models/Transaction";
+import { CurrencyUtils } from "@/lib/utils/CurrencyUtils";
 
 const AppNavigation = () => {
   const pathname = usePathname();
@@ -70,10 +71,7 @@ const TransactionItem: React.FC<{ transaction: Transaction }> = ({
         {transactionTypeDisplayNames[transaction.type]}
       </p>
       <p className="font-bold text-black">
-        {transaction.amount.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-        })}
+        {CurrencyUtils.formatBRL(transaction.amount)}
       </p>
     </div>
     <div className="text-right">
@@ -131,10 +129,7 @@ const GreetingItem: React.FC<GreetinProps> = ({
 
           <p className="text-secondary text-2xl font-light">
             {showBalance
-              ? account.balance.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })
+              ? CurrencyUtils.formatBRL(account.balance)
               : "R$ ******"}
           </p>
         </div>

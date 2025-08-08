@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import CurrencyInput from "react-currency-input-field";
 
-import { Input } from "@/components/ui/Input";
-import { Select, SelectOption } from "@/components/ui/Select";
-import { Button } from "@/components/ui/Button";
-import { TransactionType } from "@/models/Transaction";
 import { useAccount } from "@/context/AccountContext";
+
+import { Button } from "@/components/ui/Button";
+import { Select, SelectOption } from "@/components/ui/Select";
+import { TransactionType } from "@/models/Transaction";
 
 const transactionTypes: SelectOption[] = [
   { value: "Deposit", label: "Depósito" },
@@ -18,13 +19,19 @@ export default function Home() {
   const { addTransaction } = useAccount();
 
   const [transactionType, setTransactionType] = useState("");
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<string | undefined>("");
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const amountNumber = parseFloat(amount.replace(",", "."));
+    const amountString = amount || "0";
+    const amountNumber = parseFloat(amountString.replace(",", "."));
     const typeEnum = transactionType as TransactionType;
+
+    if (isNaN(amountNumber) || !typeEnum || amountNumber === 0) {
+      alert("Por favor, preencha todos os campos com valores válidos.");
+      return;
+    }
 
     addTransaction(typeEnum, amountNumber);
 
@@ -55,13 +62,20 @@ export default function Home() {
           >
             Valor
           </label>
-          <Input
+          <CurrencyInput
             id="amount"
-            type="text"
-            placeholder="00,00"
+            name="amount"
+            placeholder="R$ 0,00"
+            allowDecimals
+            decimalsLimit={2}
+            decimalSeparator=","
+            groupSeparator="."
+            prefix="R$ "
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            className="max-w-2xs border border-primary"
+            onValueChange={(value) => setAmount(value)}
+            className="mt-1 block w-full max-w-2xs rounded-md border 
+            border-primary shadow-sm h-12 px-4 bg-white text-zinc-500 
+            focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50"
           />
         </div>
 
