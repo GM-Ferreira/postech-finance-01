@@ -13,6 +13,20 @@ export const transactionSelectOptions = [
   { value: "Payment", label: "Pagamento" },
 ];
 
+export type TransactionData = {
+  id: string;
+  type: TransactionType;
+  amount: number;
+  date: string;
+  description?: string;
+};
+
+export type UpdateTransactionData = {
+  type: TransactionType;
+  amount: number;
+  // date?: Date;
+};
+
 export class Transaction {
   public id: string;
   public type: TransactionType;

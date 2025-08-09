@@ -14,6 +14,7 @@ import { AccountService } from "@/services/AccountService";
 import { Account } from "@/models/Account";
 import { TransactionType } from "@/models/Transaction";
 import { getDeviceInfo } from "@/lib/utils/BrowserInfo";
+import { TransactionFormData } from "@/lib/schemas/transactionSchema";
 
 type AccountContextType = {
   account: Account | null;
@@ -21,6 +22,7 @@ type AccountContextType = {
   setShowBalance: (value: SetStateAction<boolean>) => void;
   addTransaction: (type: TransactionType, amount: number) => void;
   deleteTransactions: (idsToDelete: string[]) => void;
+  updateTransaction: (transactionId: string, data: TransactionFormData) => void;
 };
 
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
@@ -61,12 +63,36 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateTransaction = (
+    transactionId: string,
+    data: TransactionFormData
+  ) => {
+    const amountAsNumber = parseFloat(data.amount.replace(",", "."));
+
+    const newData = {
+      type: data.type,
+      amount: amountAsNumber,
+    };
+
+    const updatedAccount = accountService.updateTransaction(
+      transactionId,
+      newData
+    );
+
+    if (updatedAccount) {
+      setAccount(
+        new Account(updatedAccount.balance, updatedAccount.transactions)
+      );
+    }
+  };
+
   const value = {
     account,
     showBalance,
     setShowBalance,
     addTransaction,
     deleteTransactions,
+    updateTransaction,
   };
 
   return (

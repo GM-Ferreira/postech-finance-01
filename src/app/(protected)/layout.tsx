@@ -313,8 +313,9 @@ export default function ProtectedLayout({
 
   const [visibleCount, setVisibleCount] = useState(10);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
+  const [selectedTransactionId, setSelectedTransactionId] = useState<
+    string | null
+  >(null);
 
   const router = useRouter();
 
@@ -335,18 +336,13 @@ export default function ProtectedLayout({
   };
 
   const handleOpenDetails = (transactionId: string) => {
-    const transaction = account?.transactions.find(
-      (tx) => tx.id === transactionId
-    );
-    if (transaction) {
-      setSelectedTransaction(transaction);
-      setIsDetailModalOpen(true);
-    }
+    setSelectedTransactionId(transactionId);
+    setIsDetailModalOpen(true);
   };
 
   const handleCloseDetails = () => {
     setIsDetailModalOpen(false);
-    setSelectedTransaction(null);
+    setSelectedTransactionId(null);
   };
 
   if (isLoading) {
@@ -391,7 +387,7 @@ export default function ProtectedLayout({
       <TransactionDetailModal
         isOpen={isDetailModalOpen}
         onClose={handleCloseDetails}
-        transaction={selectedTransaction}
+        transactionId={selectedTransactionId}
       />
       {/* TODO - adicioanr footer no futuro*/}
     </div>

@@ -1,4 +1,8 @@
-import { Transaction, TransactionType } from "./Transaction";
+import {
+  Transaction,
+  TransactionType,
+  UpdateTransactionData,
+} from "./Transaction";
 
 export class Account {
   public balance: number;
@@ -39,5 +43,30 @@ export class Account {
     );
 
     this.balance -= amountToRevert;
+  }
+
+  updateTransaction(
+    transactionId: string,
+    newData: UpdateTransactionData
+  ): void {
+    const transactionToUpdate = this.transactions.find(
+      (transaction) => transaction.id === transactionId
+    );
+
+    if (!transactionToUpdate) {
+      console.error(
+        "Transação não encontrada para atualização:",
+        transactionId
+      );
+      return;
+    }
+
+    const oldAmount = transactionToUpdate.amount;
+
+    transactionToUpdate.type = newData.type;
+    transactionToUpdate.amount = newData.amount;
+    // transactionToUpdate.date = newData.date; // Se for editável
+
+    this.balance = this.balance - oldAmount + newData.amount;
   }
 }

@@ -1,14 +1,11 @@
 import { StorageService } from "./StorageService";
 import { Account } from "@/models/Account";
-import { Transaction, TransactionType } from "@/models/Transaction";
-
-type TransactionData = {
-  id: string;
-  type: TransactionType;
-  amount: number;
-  date: string;
-  description?: string;
-};
+import {
+  Transaction,
+  TransactionData,
+  TransactionType,
+  UpdateTransactionData,
+} from "@/models/Transaction";
 
 export class AccountService {
   private storageService: StorageService;
@@ -97,6 +94,24 @@ export class AccountService {
     currentAccount.deleteTransactions(idsToDelete);
     this.saveAccountData(currentAccount);
 
+    return currentAccount;
+  }
+
+  public updateTransaction(
+    transactionId: string,
+    newData: UpdateTransactionData
+  ): Account | null {
+    const currentAccount = this.getAccountData();
+
+    if (!currentAccount) return null;
+
+    currentAccount.updateTransaction(transactionId, newData);
+
+    currentAccount.transactions.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+
+    this.saveAccountData(currentAccount);
     return currentAccount;
   }
 }
