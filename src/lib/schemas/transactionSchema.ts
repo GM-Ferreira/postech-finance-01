@@ -9,7 +9,7 @@ export const transactionSchema = z.object({
     .min(1, { message: "O valor é obrigatório." })
     .refine(
       (value) => {
-        const number = parseFloat(value);
+        const number = parseFloat(value.replace(",", "."));
         return number !== 0;
       },
       {

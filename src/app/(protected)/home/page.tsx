@@ -38,7 +38,7 @@ export default function Home() {
   });
 
   const onSubmit = (data: TransactionFormData) => {
-    const amountAsNumber = parseFloat(data.amount);
+    const amountAsNumber = parseFloat(data.amount.replace(",", "."));
 
     addTransaction(data.type, amountAsNumber);
 
