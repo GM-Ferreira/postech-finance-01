@@ -25,10 +25,10 @@ export class AccountService {
   private createInitialAccount(): Account {
     const finalAccount = new Account(2500);
     finalAccount.transactions = [
-      new Transaction("Transfer", -500, new Date("2025-07-21")),
-      new Transaction("Deposit", 50, new Date("2025-07-21")),
-      new Transaction("Deposit", 100, new Date("2025-07-21")),
-      new Transaction("Deposit", 150, new Date("2025-07-18")),
+      new Transaction("Transfer", -500, new Date("2025-07-21"), "Valor incial"),
+      new Transaction("Deposit", 50, new Date("2025-07-21"), "Valor incial"),
+      new Transaction("Deposit", 100, new Date("2025-07-21"), "Valor incial"),
+      new Transaction("Deposit", 150, new Date("2025-07-18"), "Valor incial"),
     ];
 
     finalAccount.transactions.sort(

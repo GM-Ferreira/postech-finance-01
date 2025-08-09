@@ -7,8 +7,9 @@ import Link from "next/link";
 import { useAccount } from "@/context/AccountContext";
 
 import { useAuth } from "@/hooks/useAuth";
+import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/icons";
+import { TransactionDetailModal } from "@/components/modals/TransactionDetailModal";
 import { Account } from "@/models/Account";
-import { EyeIcon, EyeOffIcon, PencilIcon, TrashIcon } from "@/components/icons";
 import { Transaction, TransactionType } from "@/models/Transaction";
 import { CurrencyUtils } from "@/lib/utils/CurrencyUtils";
 
@@ -24,8 +25,8 @@ const NavigationSection = () => {
     <nav
       className="w-full
         flex flex-row justify-around items-center py-4
-        md:flex-col md:justify-start md:items-stretch 
-        md:bg-[#f5f5f5] md:p-6 md:rounded-lg md:gap-2 md:max-w-44"
+        lg:flex-col lg:justify-start lg:items-stretch 
+        lg:bg-[#f5f5f5] lg:p-6 lg:rounded-lg lg:gap-2 lg:max-w-44"
     >
       {navLinks.map((link) => {
         const isActive = pathname.startsWith(link.href);
@@ -127,6 +128,7 @@ type TransactionItemProps = {
   isDeleteModeActive: boolean;
   isSelected: boolean;
   onSelectionChange: (id: string) => void;
+  onOpenDetails: (transactionId: string) => void;
 };
 
 const TransactionItem: React.FC<TransactionItemProps> = ({
@@ -134,36 +136,51 @@ const TransactionItem: React.FC<TransactionItemProps> = ({
   isDeleteModeActive,
   isSelected,
   onSelectionChange,
-}) => (
-  <div className="flex items-center gap-4 border-b border-success/40 py-3">
-    {isDeleteModeActive && (
-      <input
-        type="checkbox"
-        checked={isSelected}
-        onChange={() => onSelectionChange(transaction.id)}
-        className="form-checkbox min-h-4 max-h-5 min-w-4 max-w-5 text-primary rounded accent-warning"
-      />
-    )}
-    <div className="flex flex-grow justify-between items-center">
-      <div>
-        <p className="text-sm text-success font-semibold">
-          {transaction.date.toLocaleDateString("pt-BR", { month: "long" })}
-        </p>
-        <p className="text-black">
-          {transactionTypeDisplayNames[transaction.type]}
-        </p>
-        <p className="font-bold text-black">
-          {CurrencyUtils.formatBRL(transaction.amount)}
-        </p>
-      </div>
-      <div className="text-right">
-        <p className="text-sm text-gray-500">
-          {transaction.date.toLocaleDateString("pt-BR")}
-        </p>
+  onOpenDetails,
+}) => {
+  const handleClick = () => {
+    if (isDeleteModeActive) {
+      onSelectionChange(transaction.id);
+    } else {
+      onOpenDetails(transaction.id);
+    }
+  };
+
+  return (
+    <div
+      className={`flex items-center gap-4 border-b border-success/40 py-3 px-2 cursor-pointer transition-colors
+    ${isDeleteModeActive ? "hover:bg-warning/5" : "hover:bg-[#E4EDE3]/60"} `}
+      onClick={handleClick}
+    >
+      {isDeleteModeActive && (
+        <input
+          type="checkbox"
+          checked={isSelected}
+          readOnly
+          className="form-checkbox min-h-4 max-h-5 min-w-4 max-w-5 text-primary rounded accent-warning"
+        />
+      )}
+      <div className="flex flex-grow justify-between items-center">
+        <div>
+          <p className="text-sm text-success font-semibold">
+            {transaction.date.toLocaleDateString("pt-BR", { month: "long" })}
+          </p>
+          <p className="text-black">
+            {transactionTypeDisplayNames[transaction.type]}
+          </p>
+          <p className="font-bold text-black">
+            {CurrencyUtils.formatBRL(transaction.amount)}
+          </p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm text-gray-500">
+            {transaction.date.toLocaleDateString("pt-BR")}
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 type StatementSectionProps = {
   visibleTransactions: Transaction[] | undefined;
@@ -171,6 +188,7 @@ type StatementSectionProps = {
   visibleCount: number;
   loadMoreTransaction: () => void;
   deleteTransactions: (idsToDelete: string[]) => void;
+  onOpenTransactionDetails: (transactionId: string) => void;
 };
 
 const StatementSection: React.FC<StatementSectionProps> = ({
@@ -179,6 +197,7 @@ const StatementSection: React.FC<StatementSectionProps> = ({
   visibleCount,
   loadMoreTransaction,
   deleteTransactions,
+  onOpenTransactionDetails,
 }) => {
   const [isDeleteModeActive, setIsDeleteModeActive] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set<string>());
@@ -226,44 +245,31 @@ const StatementSection: React.FC<StatementSectionProps> = ({
       <div className="flex justify-between items-center mb-4">
         <p className="text-black text-xl font-bold">Extrato</p>
 
-        <div className="flex gap-2">
-          <div
-            onClick={isDeleteModeActive ? undefined : toggleRemoveMode}
-            className={`flex items-center justify-center rounded-full p-2 transition-colors ${
-              isDeleteModeActive
-                ? "bg-red-500 opacity-50 cursor-default"
-                : "bg-primary cursor-pointer"
-            }`}
-          >
-            <TrashIcon className="text-white" size={20} />
-          </div>
-
-          <div
-            onClick={() => {
-              console.log("Edit action");
-            }}
-            className={`flex items-center justify-center rounded-full p-2 transition-colors ${
-              isDeleteModeActive
-                ? "bg-gray-400 opacity-15 cursor-default"
-                : "bg-primary cursor-pointer"
-            }`}
-          >
-            <PencilIcon className="text-white" size={20} />
-          </div>
+        <div
+          onClick={isDeleteModeActive ? undefined : toggleRemoveMode}
+          className={`flex items-center justify-center rounded-full p-2 transition-colors ${
+            isDeleteModeActive
+              ? "bg-red-500 opacity-50 cursor-default"
+              : "bg-primary cursor-pointer"
+          }`}
+        >
+          <TrashIcon className="text-white" size={20} />
         </div>
       </div>
 
       {isDeleteModeActive && (
-        <div className="flex flex-1 gap-2">
+        <div className="flex flex-1 gap-2 mb-2">
           <div
             onClick={handleDeleteSelected}
-            className="flex w-1/2 justify-center mt-4 border border-warning rounded-lg py-2 cursor-pointer"
+            className="flex w-1/2 justify-center mt-4 border
+            border-warning rounded-lg py-2 cursor-pointer hover:bg-warning/10"
           >
             <p className="text-warning">Apagar</p>
           </div>
           <div
             onClick={toggleRemoveMode}
-            className="flex flex-1 justify-center mt-4 border border-gray-400 rounded-lg py-2 cursor-pointer"
+            className="flex flex-1 justify-center mt-4 border
+            border-gray-400 rounded-lg py-2 cursor-pointer  hover:bg-gray-400/10"
           >
             <p className="text-gray-600">Cancelar</p>
           </div>
@@ -278,6 +284,7 @@ const StatementSection: React.FC<StatementSectionProps> = ({
             isDeleteModeActive={isDeleteModeActive}
             isSelected={selectedIds.has(transaction.id)}
             onSelectionChange={handleSelectionChange}
+            onOpenDetails={onOpenTransactionDetails}
           />
         );
       })}
@@ -306,6 +313,9 @@ export default function ProtectedLayout({
     useAccount();
 
   const [visibleCount, setVisibleCount] = useState(10);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
 
   const router = useRouter();
 
@@ -325,6 +335,21 @@ export default function ProtectedLayout({
     setVisibleCount((prevCount) => prevCount + 10);
   };
 
+  const handleOpenDetails = (transactionId: string) => {
+    const transaction = account?.transactions.find(
+      (tx) => tx.id === transactionId
+    );
+    if (transaction) {
+      setSelectedTransaction(transaction);
+      setIsDetailModalOpen(true);
+    }
+  };
+
+  const handleCloseDetails = () => {
+    setIsDetailModalOpen(false);
+    setSelectedTransaction(null);
+  };
+
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -336,7 +361,7 @@ export default function ProtectedLayout({
   return (
     <div
       className="container mx-auto p-4 grid grid-cols-1 
-      gap-6 md:min-h-screen md:grid-cols-[auto_1fr_auto]"
+      gap-6 lg:min-h-screen lg:grid-cols-[auto_1fr_auto]"
     >
       <NavigationSection />
 
@@ -361,8 +386,14 @@ export default function ProtectedLayout({
         visibleCount={visibleCount}
         visibleTransactions={visibleTransactions}
         deleteTransactions={deleteTransactions}
+        onOpenTransactionDetails={handleOpenDetails}
       />
 
+      <TransactionDetailModal
+        isOpen={isDetailModalOpen}
+        onClose={handleCloseDetails}
+        transaction={selectedTransaction}
+      />
       {/* TODO - adicioanr footer no futuro*/}
     </div>
   );
