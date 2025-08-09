@@ -1,6 +1,6 @@
 "use client";
 
-import { SetStateAction, useEffect } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
@@ -148,6 +148,8 @@ export default function ProtectedLayout({
   const { isLoggedIn, isLoading, currentUser } = useAuth();
   const { account, showBalance, setShowBalance } = useAccount();
 
+  const [visibleCount, setVisibleCount] = useState(10);
+
   const router = useRouter();
 
   const now = new Date();
@@ -159,6 +161,12 @@ export default function ProtectedLayout({
       router.replace("/");
     }
   }, [isLoading, isLoggedIn, router]);
+
+  const visibleTransactions = account?.transactions.slice(0, visibleCount);
+
+  const loadMoreTransaction = () => {
+    setVisibleCount((prevCount) => prevCount + 10);
+  };
 
   if (isLoading) {
     return (
@@ -199,11 +207,21 @@ export default function ProtectedLayout({
 
       <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
         <p className="text-black text-xl font-bold">Extrato</p>
-        {account?.transactions.map((transaction) => {
+        {visibleTransactions?.map((transaction) => {
           return (
             <TransactionItem key={transaction.id} transaction={transaction} />
           );
         })}
+
+        {account?.transactions &&
+          visibleCount < account.transactions.length && (
+            <div
+              onClick={loadMoreTransaction}
+              className="flex justify-center mt-4 border border-gray-300 rounded-lg py-2"
+            >
+              <p className="text-success">Carregar mais itens</p>
+            </div>
+          )}
       </aside>
 
       {/* TODO - adicioanr footer no futuro*/}
