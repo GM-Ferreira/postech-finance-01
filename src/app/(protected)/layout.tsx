@@ -8,7 +8,7 @@ import { useAccount } from "@/context/AccountContext";
 
 import { useAuth } from "@/hooks/useAuth";
 import { Account } from "@/models/Account";
-import { EyeIcon, EyeOffIcon } from "@/components/icons";
+import { EyeIcon, EyeOffIcon, PencilIcon, TrashIcon } from "@/components/icons";
 import { Transaction, TransactionType } from "@/models/Transaction";
 import { CurrencyUtils } from "@/lib/utils/CurrencyUtils";
 
@@ -206,7 +206,29 @@ export default function ProtectedLayout({
       </main>
 
       <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
-        <p className="text-black text-xl font-bold">Extrato</p>
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-black text-xl font-bold">Extrato</p>
+          <div className="flex gap-2">
+            <div
+              onClick={() => {
+                console.log("Delete action");
+              }}
+              className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
+            >
+              <TrashIcon className="text-white" size={20} />
+            </div>
+
+            <div
+              onClick={() => {
+                console.log("Edit action");
+              }}
+              className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
+            >
+              <PencilIcon className="text-white" size={20} />
+            </div>
+          </div>
+        </div>
+
         {visibleTransactions?.map((transaction) => {
           return (
             <TransactionItem key={transaction.id} transaction={transaction} />
