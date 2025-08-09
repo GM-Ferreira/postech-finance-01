@@ -12,7 +12,7 @@ import { EyeIcon, EyeOffIcon, PencilIcon, TrashIcon } from "@/components/icons";
 import { Transaction, TransactionType } from "@/models/Transaction";
 import { CurrencyUtils } from "@/lib/utils/CurrencyUtils";
 
-const AppNavigation = () => {
+const NavigationSection = () => {
   const pathname = usePathname();
   const navLinks = [
     { href: "/home", label: "Início" },
@@ -21,7 +21,12 @@ const AppNavigation = () => {
   ];
 
   return (
-    <>
+    <nav
+      className="w-full
+        flex flex-row justify-around items-center py-4
+        md:flex-col md:justify-start md:items-stretch 
+        md:bg-[#f5f5f5] md:p-6 md:rounded-lg md:gap-2 md:max-w-44"
+    >
       {navLinks.map((link) => {
         const isActive = pathname.startsWith(link.href);
         return (
@@ -49,40 +54,11 @@ const AppNavigation = () => {
           </Link>
         );
       })}
-    </>
+    </nav>
   );
 };
 
-const transactionTypeDisplayNames: { [key in TransactionType]: string } = {
-  Deposit: "Depósito",
-  Transfer: "Transferência",
-  Payment: "Pagamento",
-};
-
-const TransactionItem: React.FC<{ transaction: Transaction }> = ({
-  transaction,
-}) => (
-  <div className="flex justify-between items-center border-b border-success/40 py-3">
-    <div>
-      <p className="text-sm text-success font-semibold">
-        {transaction.date.toLocaleDateString("pt-BR", { month: "long" })}
-      </p>
-      <p className="text-black">
-        {transactionTypeDisplayNames[transaction.type]}
-      </p>
-      <p className="font-bold text-black">
-        {CurrencyUtils.formatBRL(transaction.amount)}
-      </p>
-    </div>
-    <div className="text-right">
-      <p className="text-sm text-gray-500">
-        {transaction.date.toLocaleDateString("pt-BR")}
-      </p>
-    </div>
-  </div>
-);
-
-type GreetinProps = {
+type GreetinSectionProps = {
   formattedDate: string;
   weekDay: string;
   userName: string;
@@ -91,7 +67,7 @@ type GreetinProps = {
   setShowBalance: (value: SetStateAction<boolean>) => void;
 };
 
-const GreetingItem: React.FC<GreetinProps> = ({
+const GreetingSection: React.FC<GreetinSectionProps> = ({
   account,
   weekDay,
   userName,
@@ -140,6 +116,87 @@ const GreetingItem: React.FC<GreetinProps> = ({
   </div>
 );
 
+const transactionTypeDisplayNames: { [key in TransactionType]: string } = {
+  Deposit: "Depósito",
+  Transfer: "Transferência",
+  Payment: "Pagamento",
+};
+
+const TransactionItem: React.FC<{ transaction: Transaction }> = ({
+  transaction,
+}) => (
+  <div className="flex justify-between items-center border-b border-success/40 py-3">
+    <div>
+      <p className="text-sm text-success font-semibold">
+        {transaction.date.toLocaleDateString("pt-BR", { month: "long" })}
+      </p>
+      <p className="text-black">
+        {transactionTypeDisplayNames[transaction.type]}
+      </p>
+      <p className="font-bold text-black">
+        {CurrencyUtils.formatBRL(transaction.amount)}
+      </p>
+    </div>
+    <div className="text-right">
+      <p className="text-sm text-gray-500">
+        {transaction.date.toLocaleDateString("pt-BR")}
+      </p>
+    </div>
+  </div>
+);
+
+type StatementSectionProps = {
+  visibleTransactions: Transaction[] | undefined;
+  account: Account | null;
+  visibleCount: number;
+  loadMoreTransaction: () => void;
+};
+
+const StatementSection: React.FC<StatementSectionProps> = ({
+  visibleTransactions,
+  account,
+  visibleCount,
+  loadMoreTransaction,
+}) => (
+  <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
+    <div className="flex justify-between items-center mb-4">
+      <p className="text-black text-xl font-bold">Extrato</p>
+      <div className="flex gap-2">
+        <div
+          onClick={() => {
+            console.log("Delete action");
+          }}
+          className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
+        >
+          <TrashIcon className="text-white" size={20} />
+        </div>
+
+        <div
+          onClick={() => {
+            console.log("Edit action");
+          }}
+          className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
+        >
+          <PencilIcon className="text-white" size={20} />
+        </div>
+      </div>
+    </div>
+
+    {visibleTransactions?.map((transaction) => {
+      return <TransactionItem key={transaction.id} transaction={transaction} />;
+    })}
+
+    {account?.transactions && visibleCount < account.transactions.length && (
+      <div
+        onClick={loadMoreTransaction}
+        className="flex justify-center mt-4 border border-gray-300 rounded-lg py-2"
+      >
+        <p className="text-success">Carregar mais itens</p>
+      </div>
+    )}
+  </aside>
+);
+
 export default function ProtectedLayout({
   children,
 }: {
@@ -181,17 +238,10 @@ export default function ProtectedLayout({
       className="container mx-auto p-4 grid grid-cols-1 
       gap-6 md:min-h-screen md:grid-cols-[auto_1fr_auto]"
     >
-      <nav
-        className="w-full
-        flex flex-row justify-around items-center py-4
-        md:flex-col md:justify-start md:items-stretch 
-        md:bg-[#f5f5f5] md:p-6 md:rounded-lg md:gap-2 md:max-w-44"
-      >
-        <AppNavigation />
-      </nav>
+      <NavigationSection />
 
       <main className="flex flex-col gap-6 w-full">
-        <GreetingItem
+        <GreetingSection
           formattedDate={formattedDate}
           weekDay={weekDay}
           userName={currentUser?.name ?? ""}
@@ -205,46 +255,12 @@ export default function ProtectedLayout({
         </div>
       </main>
 
-      <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
-        <div className="flex justify-between items-center mb-4">
-          <p className="text-black text-xl font-bold">Extrato</p>
-          <div className="flex gap-2">
-            <div
-              onClick={() => {
-                console.log("Delete action");
-              }}
-              className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
-            >
-              <TrashIcon className="text-white" size={20} />
-            </div>
-
-            <div
-              onClick={() => {
-                console.log("Edit action");
-              }}
-              className="flex items-center justify-center rounded-full bg-primary cursor-pointer p-2"
-            >
-              <PencilIcon className="text-white" size={20} />
-            </div>
-          </div>
-        </div>
-
-        {visibleTransactions?.map((transaction) => {
-          return (
-            <TransactionItem key={transaction.id} transaction={transaction} />
-          );
-        })}
-
-        {account?.transactions &&
-          visibleCount < account.transactions.length && (
-            <div
-              onClick={loadMoreTransaction}
-              className="flex justify-center mt-4 border border-gray-300 rounded-lg py-2"
-            >
-              <p className="text-success">Carregar mais itens</p>
-            </div>
-          )}
-      </aside>
+      <StatementSection
+        account={account}
+        loadMoreTransaction={loadMoreTransaction}
+        visibleCount={visibleCount}
+        visibleTransactions={visibleTransactions}
+      />
 
       {/* TODO - adicioanr footer no futuro*/}
     </div>
