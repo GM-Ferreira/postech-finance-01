@@ -12,13 +12,8 @@ import {
   TransactionFormInput,
 } from "@/lib/schemas/transactionSchema";
 import { Button } from "@/components/ui/Button";
-import { Select, SelectOption } from "@/components/ui/Select";
-
-const transactionTypes: SelectOption[] = [
-  { value: "Deposit", label: "Depósito" },
-  { value: "Transfer", label: "Transferência" },
-  { value: "Payment", label: "Pagamento" },
-];
+import { Select } from "@/components/ui/Select";
+import { transactionSelectOptions } from "@/models/Transaction";
 
 export default function Home() {
   const { addTransaction } = useAccount();
@@ -60,7 +55,7 @@ export default function Home() {
                 {...field}
                 value={field.value || ""}
                 placeholder="Selecione o tipo de transação"
-                options={transactionTypes}
+                options={transactionSelectOptions}
                 className={`max-w-96 ${errors.type && "border-red-500"}`}
               />
             )}

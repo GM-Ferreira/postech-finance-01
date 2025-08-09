@@ -1,5 +1,18 @@
 export type TransactionType = "Deposit" | "Transfer" | "Payment";
 
+export const transactionTypeDisplayNames: { [key in TransactionType]: string } =
+  {
+    Deposit: "Depósito",
+    Transfer: "Transferência",
+    Payment: "Pagamento",
+  };
+
+export const transactionSelectOptions = [
+  { value: "Deposit", label: "Depósito" },
+  { value: "Transfer", label: "Transferência" },
+  { value: "Payment", label: "Pagamento" },
+];
+
 export class Transaction {
   public id: string;
   public type: TransactionType;

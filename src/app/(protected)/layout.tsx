@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/icons";
 import { TransactionDetailModal } from "@/components/modals/TransactionDetailModal";
 import { Account } from "@/models/Account";
-import { Transaction, TransactionType } from "@/models/Transaction";
+import { Transaction, transactionTypeDisplayNames } from "@/models/Transaction";
 import { CurrencyUtils } from "@/lib/utils/CurrencyUtils";
 
 const NavigationSection = () => {
@@ -116,12 +116,6 @@ const GreetingSection: React.FC<GreetinSectionProps> = ({
     )}
   </div>
 );
-
-const transactionTypeDisplayNames: { [key in TransactionType]: string } = {
-  Deposit: "Depósito",
-  Transfer: "Transferência",
-  Payment: "Pagamento",
-};
 
 type TransactionItemProps = {
   transaction: Transaction;
