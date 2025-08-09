@@ -21,7 +21,5 @@ export class Account {
     const newTransaction = new Transaction(type, amount, date, description);
     this.transactions.push(newTransaction);
     this.balance += amount;
-
-    console.log("New transaction added and balance updated:", this);
   }
 }

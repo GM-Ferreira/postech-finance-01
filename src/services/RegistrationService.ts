@@ -30,15 +30,11 @@ export class RegistrationService {
 
   async submit(): Promise<{ success: boolean; message?: string }> {
     if (!this.termsAccepted) {
-      console.error("É preciso aceitar os termos de uso.");
-
       return Promise.reject({
         success: false,
         message: "É preciso aceitar os termos de uso.",
       });
     }
-
-    console.log("Enviando dados do novo usuário para a API:", this.user);
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 

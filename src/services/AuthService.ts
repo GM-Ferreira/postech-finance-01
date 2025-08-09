@@ -18,7 +18,6 @@ export class AuthService {
   login(user: User, setter: (user: User | null) => void): void {
     this.currentUser = user;
     this.storageService.setItem(StorageService.AUTH_KEY, user);
-    console.log("Usuário salvo no localStorage:", user);
     setter(this.currentUser);
   }
 

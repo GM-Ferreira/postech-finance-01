@@ -29,8 +29,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     if (email && password) {
-      console.log("Login para:", email);
-
       const name = email.split("@")[0];
       const userToLogin: User = { name, email };
 
