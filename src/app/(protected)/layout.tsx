@@ -224,10 +224,15 @@ const StatementSection: React.FC<StatementSectionProps> = ({
 
   const handleDeleteSelected = () => {
     const idsToDelete = Array.from(selectedIds);
+    const count = idsToDelete.length;
+
+    if (count === 0) {
+      alert("Nenhuma transação selecionada para remoção.");
+      return;
+    }
 
     deleteTransactions(idsToDelete);
 
-    const count = idsToDelete.length;
     let message: string;
     if (count === 1) {
       message = "1 transação removida com sucesso!";
