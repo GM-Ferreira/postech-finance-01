@@ -13,6 +13,7 @@ import {
 import { AccountService } from "@/services/AccountService";
 import { Account } from "@/models/Account";
 import { TransactionType } from "@/models/Transaction";
+import { getDeviceInfo } from "@/lib/utils/BrowserInfo";
 
 type AccountContextType = {
   account: Account | null;
@@ -35,11 +36,14 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   }, [accountService]);
 
   const addTransaction = (type: TransactionType, amount: number) => {
+    const deviceInfo = getDeviceInfo();
+    const description = `Adicionado via ${deviceInfo.os} - ${deviceInfo.browser}`;
+
     const updatedAccount = accountService.addTransaction(
       type,
       amount,
       new Date(),
-      "Nova Transação"
+      description
     );
 
     setAccount(

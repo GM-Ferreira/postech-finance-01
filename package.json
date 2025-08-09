@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
+    "bowser": "^2.11.0",
     "next": "15.4.4",
     "react": "19.1.0",
     "react-currency-input-field": "^3.10.0",
