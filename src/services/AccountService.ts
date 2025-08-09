@@ -48,7 +48,13 @@ export class AccountService {
       const transactions = savedData.transactions
         .map(
           (t) =>
-            new Transaction(t.type, t.amount, new Date(t.date), t.description)
+            new Transaction(
+              t.type,
+              t.amount,
+              new Date(t.date),
+              t.description,
+              t.id
+            )
         )
         .sort((a, b) => b.date.getTime() - a.date.getTime());
 
@@ -75,6 +81,20 @@ export class AccountService {
       (a, b) => b.date.getTime() - a.date.getTime()
     );
 
+    this.saveAccountData(currentAccount);
+
+    return currentAccount;
+  }
+
+  public deleteTransactions(idsToDelete: string[]): Account | null {
+    const currentAccount = this.getAccountData();
+
+    if (!currentAccount) {
+      console.error("Nenhuma conta encontrada para deletar transações.");
+      return null;
+    }
+
+    currentAccount.deleteTransactions(idsToDelete);
     this.saveAccountData(currentAccount);
 
     return currentAccount;

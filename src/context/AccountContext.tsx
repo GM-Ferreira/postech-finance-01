@@ -19,6 +19,7 @@ type AccountContextType = {
   showBalance: boolean;
   setShowBalance: (value: SetStateAction<boolean>) => void;
   addTransaction: (type: TransactionType, amount: number) => void;
+  deleteTransactions: (idsToDelete: string[]) => void;
 };
 
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
@@ -46,7 +47,23 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
-  const value = { account, showBalance, setShowBalance, addTransaction };
+  const deleteTransactions = (idsToDelete: string[]) => {
+    const updatedAccount = accountService.deleteTransactions(idsToDelete);
+
+    if (updatedAccount) {
+      setAccount(
+        new Account(updatedAccount.balance, updatedAccount.transactions)
+      );
+    }
+  };
+
+  const value = {
+    account,
+    showBalance,
+    setShowBalance,
+    addTransaction,
+    deleteTransactions,
+  };
 
   return (
     <AccountContext.Provider value={value}>{children}</AccountContext.Provider>

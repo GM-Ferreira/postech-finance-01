@@ -11,16 +11,13 @@ export class Transaction {
     type: TransactionType,
     amount: number,
     date: Date,
-    description?: string
+    description?: string,
+    id?: string
   ) {
-    this.id = crypto.randomUUID();
+    this.id = id || crypto.randomUUID();
     this.type = type;
     this.amount = amount;
     this.date = date;
     this.description = description;
-  }
-
-  get isCredit(): boolean {
-    return this.amount > 0;
   }
 }
