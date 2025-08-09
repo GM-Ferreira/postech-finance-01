@@ -222,7 +222,7 @@ const StatementSection: React.FC<StatementSectionProps> = ({
   };
 
   return (
-    <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-64">
+    <aside className="w-full bg-[#f5f5f5] p-6 rounded-lg md:min-w-72">
       <div className="flex justify-between items-center mb-4">
         <p className="text-black text-xl font-bold">Extrato</p>
 
