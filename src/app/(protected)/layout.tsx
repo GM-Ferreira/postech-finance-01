@@ -263,7 +263,7 @@ const StatementSection: React.FC<StatementSectionProps> = ({
             className="flex w-1/2 justify-center mt-4 border
             border-warning rounded-lg py-2 cursor-pointer hover:bg-warning/10"
           >
-            <p className="text-warning">Apagar</p>
+            <p className="text-warning">Excluir</p>
           </div>
           <div
             onClick={toggleRemoveMode}

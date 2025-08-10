@@ -49,7 +49,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   onClose,
   transactionId,
 }) => {
-  const { account, updateTransaction } = useAccount();
+  const { account, updateTransaction, deleteTransactions } = useAccount();
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -99,6 +99,14 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   const handleClose = () => {
     setIsEditing(false);
     onClose();
+  };
+
+  const handleDelete = () => {
+    if (transactionId) {
+      deleteTransactions([transactionId]);
+      alert("Transação excluída com sucesso!");
+      handleClose();
+    }
   };
 
   return (
@@ -262,9 +270,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 w-full justify-center">
               <button
-                onClick={() =>
-                  console.log("EXCLUIR transação:", transaction.id)
-                }
+                onClick={handleDelete}
                 className="flex items-center justify-center gap-2 w-full sm:w-auto h-12 px-6 opacity-80 
                 rounded-md bg-warning text-white hover:opacity-100 transition-colors"
               >
