@@ -149,12 +149,12 @@ export const SignUpModal: React.FC<SignUpModalProps> = ({
             </p>
           </label>
 
-          {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+          {error && <p className="mt-4 text-center text-warning">{error}</p>}
 
           <div className="flex w-full justify-center p-4 mt-4">
             <button
               type="submit"
-              className="w-36 h-12 rounded-md bg-warning py-2 text-white hover:bg-red-600 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-36 h-12 rounded-md bg-warning py-2 text-white hover:bg-warning transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!isTermsChecked || isLoading}
             >
               {isLoading ? "Criando..." : "Criar conta"}

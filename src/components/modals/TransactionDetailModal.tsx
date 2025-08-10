@@ -130,12 +130,12 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                       value={field.value || ""}
                       placeholder="Selecione o tipo de transação"
                       options={transactionSelectOptions}
-                      className={`max-w-96 ${errors.type && "border-red-500"}`}
+                      className={`max-w-96 ${errors.type && "border-warning"}`}
                     />
                   )}
                 />
                 {errors.type && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-warning">
                     {errors.type.message}
                   </p>
                 )}
@@ -170,12 +170,12 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                       }
                       className={`mt-1 block w-full max-w-2xs rounded-md border
                     shadow-sm h-12 px-4 bg-white text-zinc-500 
-                    ${errors.amount ? "border-red-500" : "border-primary"}`}
+                    ${errors.amount ? "border-warning" : "border-primary"}`}
                     />
                   )}
                 />
                 {errors.amount && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-warning">
                     {errors.amount.message}
                   </p>
                 )}
@@ -197,12 +197,12 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                       {...field}
                       className={`mt-1 block w-full rounded-md border
                       shadow-sm h-12 px-4 bg-white text-zinc-500 
-                      ${errors.date ? "border-red-500" : "border-primary"}`}
+                      ${errors.date ? "border-warning" : "border-primary"}`}
                     />
                   )}
                 />
                 {errors.date && (
-                  <p className="mt-1 text-sm text-red-600">
+                  <p className="mt-1 text-sm text-warning">
                     {errors.date.message}
                   </p>
                 )}

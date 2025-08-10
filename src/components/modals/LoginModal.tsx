@@ -74,7 +74,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             />
           </label>
 
-          {error && <p className="mt-4 text-center text-red-500">{error}</p>}
+          {error && <p className="mt-4 text-center text-warning">{error}</p>}
 
           <div className="flex w-full justify-center p-4 mt-6">
             <button

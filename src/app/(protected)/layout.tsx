@@ -248,7 +248,7 @@ const StatementSection: React.FC<StatementSectionProps> = ({
           onClick={isDeleteModeActive ? undefined : toggleRemoveMode}
           className={`flex items-center justify-center rounded-full p-2 transition-colors ${
             isDeleteModeActive
-              ? "bg-red-500 opacity-50 cursor-default"
+              ? "bg-warning opacity-50 cursor-default"
               : "bg-primary cursor-pointer"
           }`}
         >
