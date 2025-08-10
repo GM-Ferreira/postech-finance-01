@@ -9,23 +9,35 @@ import {
 
 export class AccountService {
   private storageService: StorageService;
-  private static readonly ACCOUNT_KEY = "@bytebank/account-data";
+  private static readonly ACCOUNT_KEY_PREFIX = "@bytebank/account-data";
+  private userEmail: string;
 
-  constructor() {
+  constructor(userEmail: string) {
+    if (!userEmail) {
+      throw new Error(
+        "AccountService deve ser inicializado com um email de usuário."
+      );
+    }
     this.storageService = new StorageService();
+    this.userEmail = userEmail;
+  }
+
+  private getAccountKey(): string {
+    return `${AccountService.ACCOUNT_KEY_PREFIX}:${this.userEmail}`;
   }
 
   public saveAccountData(account: Account): void {
-    this.storageService.setItem(AccountService.ACCOUNT_KEY, account);
+    this.storageService.setItem(this.getAccountKey(), account);
   }
 
   private createInitialAccount(): Account {
     const finalAccount = new Account(2500);
     finalAccount.transactions = [
+      new Transaction("Payment", 2700, new Date("2025-07-20"), "Valor incial"),
       new Transaction("Transfer", -500, new Date("2025-07-21"), "Valor incial"),
       new Transaction("Deposit", 50, new Date("2025-07-21"), "Valor incial"),
       new Transaction("Deposit", 100, new Date("2025-07-21"), "Valor incial"),
-      new Transaction("Deposit", 150, new Date("2025-07-18"), "Valor incial"),
+      new Transaction("Deposit", 150, new Date("2025-07-22"), "Valor incial"),
     ];
 
     finalAccount.transactions.sort(
@@ -39,7 +51,7 @@ export class AccountService {
     const savedData = this.storageService.getItem<{
       balance: number;
       transactions: TransactionData[];
-    }>(AccountService.ACCOUNT_KEY);
+    }>(this.getAccountKey());
 
     if (savedData) {
       const transactions = savedData.transactions

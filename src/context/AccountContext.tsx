@@ -4,11 +4,12 @@ import {
   createContext,
   useState,
   useContext,
-  useMemo,
   ReactNode,
   useEffect,
   SetStateAction,
 } from "react";
+
+import { useAuth } from "@/hooks/useAuth";
 
 import { AccountService } from "@/services/AccountService";
 import { Account } from "@/models/Account";
@@ -28,20 +29,31 @@ type AccountContextType = {
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
 
 export const AccountProvider = ({ children }: { children: ReactNode }) => {
-  const accountService = useMemo(() => new AccountService(), []);
+  const { currentUser } = useAuth();
 
   const [account, setAccount] = useState<Account | null>(null);
   const [showBalance, setShowBalance] = useState(true);
+  const [accountService, setAccountService] = useState<AccountService | null>(
+    null
+  );
 
   useEffect(() => {
-    setAccount(accountService.getAccountData());
-  }, [accountService]);
+    if (currentUser) {
+      const service = new AccountService(currentUser.email);
+      setAccountService(service);
+      setAccount(service.getAccountData());
+    } else {
+      setAccountService(null);
+      setAccount(null);
+    }
+  }, [currentUser]);
 
   const addTransaction = (
     type: TransactionType,
     amount: number,
     date: Date
   ) => {
+    if (!accountService) return;
     const deviceInfo = getDeviceInfo();
     const description = `Adicionado via ${deviceInfo.os} - ${deviceInfo.browser}`;
 
@@ -58,6 +70,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const deleteTransactions = (idsToDelete: string[]) => {
+    if (!accountService) return;
     const updatedAccount = accountService.deleteTransactions(idsToDelete);
 
     if (updatedAccount) {
@@ -71,6 +84,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     transactionId: string,
     data: TransactionFormData
   ) => {
+    if (!accountService) return;
     const amountAsNumber = parseFloat(data.amount.replace(",", "."));
 
     const newData = {
