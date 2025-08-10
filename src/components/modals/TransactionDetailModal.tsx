@@ -255,7 +255,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
               />
 
               <DetailRow
-                label="Data e Hora"
+                label="Data"
                 value={transaction.date.toLocaleString("pt-BR", {
                   day: "2-digit",
                   month: "2-digit",
