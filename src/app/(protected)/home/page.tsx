@@ -29,13 +29,14 @@ export default function Home() {
     defaultValues: {
       type: undefined,
       amount: "",
+      date: "",
     },
   });
 
   const onSubmit = (data: TransactionFormData) => {
     const amountAsNumber = parseFloat(data.amount.replace(",", "."));
 
-    addTransaction(data.type, amountAsNumber);
+    addTransaction(data.type, amountAsNumber, data.date);
 
     alert("Transação adicionada com sucesso!");
     reset();
@@ -56,12 +57,12 @@ export default function Home() {
                 value={field.value || ""}
                 placeholder="Selecione o tipo de transação"
                 options={transactionSelectOptions}
-                className={`max-w-96 ${errors.type && "border-red-500"}`}
+                className={`max-w-96 ${errors.type && "border-warning"}`}
               />
             )}
           />
           {errors.type && (
-            <p className="mt-1 text-sm text-red-600">{errors.type.message}</p>
+            <p className="mt-1 text-sm text-warning">{errors.type.message}</p>
           )}
         </div>
 
@@ -94,12 +95,37 @@ export default function Home() {
                 }
                 className={`mt-1 block w-full max-w-2xs rounded-md border
                   shadow-sm h-12 px-4 bg-white text-zinc-500 
-                  ${errors.amount ? "border-red-500" : "border-primary"}`}
+                  ${errors.amount ? "border-warning" : "border-primary"}`}
               />
             )}
           />
           {errors.amount && (
-            <p className="mt-1 text-sm text-red-600">{errors.amount.message}</p>
+            <p className="mt-1 text-sm text-warning">{errors.amount.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label
+            htmlFor="date"
+            className="block text-sm font-medium text-gray-600 mb-1"
+          >
+            Data da Transação
+          </label>
+          <Controller
+            name="date"
+            control={control}
+            render={({ field }) => (
+              <input
+                type="date"
+                {...field}
+                className={`mt-1 block w-full rounded-md border 
+                  shadow-sm h-12 px-4 bg-white text-zinc-500 
+                  ${errors.date ? "border-warning" : "border-primary"}`}
+              />
+            )}
+          />
+          {errors.date && (
+            <p className="mt-1 text-sm text-warning">{errors.date.message}</p>
           )}
         </div>
 

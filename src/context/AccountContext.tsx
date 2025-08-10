@@ -20,7 +20,7 @@ type AccountContextType = {
   account: Account | null;
   showBalance: boolean;
   setShowBalance: (value: SetStateAction<boolean>) => void;
-  addTransaction: (type: TransactionType, amount: number) => void;
+  addTransaction: (type: TransactionType, amount: number, date: Date) => void;
   deleteTransactions: (idsToDelete: string[]) => void;
   updateTransaction: (transactionId: string, data: TransactionFormData) => void;
 };
@@ -37,14 +37,18 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     setAccount(accountService.getAccountData());
   }, [accountService]);
 
-  const addTransaction = (type: TransactionType, amount: number) => {
+  const addTransaction = (
+    type: TransactionType,
+    amount: number,
+    date: Date
+  ) => {
     const deviceInfo = getDeviceInfo();
     const description = `Adicionado via ${deviceInfo.os} - ${deviceInfo.browser}`;
 
     const updatedAccount = accountService.addTransaction(
       type,
       amount,
-      new Date(),
+      date,
       description
     );
 
