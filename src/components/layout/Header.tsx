@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -56,6 +56,11 @@ const Header = () => {
 
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   return (
     <header className="bg-primary shadow-md">
@@ -65,13 +70,17 @@ const Header = () => {
         </Link>
 
         <div className="flex items-center space-x-4">
-          {isLoggedIn && currentUser ? (
-            <LoggedInView user={currentUser} onLogout={logout} />
+          {isClient ? (
+            isLoggedIn && currentUser ? (
+              <LoggedInView user={currentUser} onLogout={logout} />
+            ) : (
+              <LoggedOutView
+                onLogin={() => setIsLoginModalOpen(true)}
+                onSignUp={() => setIsSignUpModalOpen(true)}
+              />
+            )
           ) : (
-            <LoggedOutView
-              onLogin={() => setIsLoginModalOpen(true)}
-              onSignUp={() => setIsSignUpModalOpen(true)}
-            />
+            <div style={{ height: "44px", width: "250px" }} />
           )}
         </div>
       </nav>
