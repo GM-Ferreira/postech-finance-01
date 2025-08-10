@@ -58,7 +58,7 @@ Siga os passos abaixo para executar o projeto em seu ambiente de desenvolvimento
 1. **Clone o repositório:**
 
     ```bash
-    git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+    git clone https://github.com/GM-Ferreira/postech-finance-01.git
     ```
 
 2. **Navegue até a pasta do projeto:**
