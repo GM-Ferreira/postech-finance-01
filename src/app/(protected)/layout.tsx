@@ -196,6 +196,18 @@ const StatementSection: React.FC<StatementSectionProps> = ({
   const [isDeleteModeActive, setIsDeleteModeActive] = useState(false);
   const [selectedIds, setSelectedIds] = useState(new Set<string>());
 
+  const visibleTransactionsCount = visibleTransactions?.length ?? 0;
+
+  const isButtonActive = !isDeleteModeActive && visibleTransactionsCount > 0;
+  const trashIconClass = `flex items-center justify-center rounded-full p-2 transition-colors
+  ${
+    isDeleteModeActive
+      ? "bg-warning opacity-50 cursor-default"
+      : !isButtonActive
+      ? "bg-gray-400 opacity-50 cursor-default"
+      : "bg-primary cursor-pointer"
+  }`;
+
   const toggleRemoveMode = () => {
     setIsDeleteModeActive(!isDeleteModeActive);
 
@@ -245,12 +257,8 @@ const StatementSection: React.FC<StatementSectionProps> = ({
         <p className="text-black text-xl font-bold">Extrato</p>
 
         <div
-          onClick={isDeleteModeActive ? undefined : toggleRemoveMode}
-          className={`flex items-center justify-center rounded-full p-2 transition-colors ${
-            isDeleteModeActive
-              ? "bg-warning opacity-50 cursor-default"
-              : "bg-primary cursor-pointer"
-          }`}
+          onClick={isButtonActive ? toggleRemoveMode : undefined}
+          className={trashIconClass}
         >
           <TrashIcon className="text-white" size={20} />
         </div>
