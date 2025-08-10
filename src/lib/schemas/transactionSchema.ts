@@ -16,6 +16,10 @@ export const transactionSchema = z.object({
         message: "O valor da transação não pode ser zero.",
       }
     ),
+  date: z
+    .string()
+    .min(1, { message: "A data é obrigatória." })
+    .transform((dateStr) => new Date(`${dateStr}T00:00:00`)),
 });
 
 export type TransactionFormData = z.infer<typeof transactionSchema>;

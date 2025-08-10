@@ -72,6 +72,7 @@ export const AccountProvider = ({ children }: { children: ReactNode }) => {
     const newData = {
       type: data.type,
       amount: amountAsNumber,
+      date: data.date,
     };
 
     const updatedAccount = accountService.updateTransaction(

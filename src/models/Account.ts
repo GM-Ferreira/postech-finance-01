@@ -65,7 +65,7 @@ export class Account {
 
     transactionToUpdate.type = newData.type;
     transactionToUpdate.amount = newData.amount;
-    // transactionToUpdate.date = newData.date; // Se for editável
+    transactionToUpdate.date = newData.date;
 
     this.balance = this.balance - oldAmount + newData.amount;
   }

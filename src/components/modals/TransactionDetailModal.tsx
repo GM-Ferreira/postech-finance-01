@@ -40,6 +40,10 @@ const DetailRow = ({
   </div>
 );
 
+function formatDateForInput(date: Date): string {
+  return date.toISOString().split("T")[0];
+}
+
 export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   isOpen,
   onClose,
@@ -61,6 +65,11 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   } = useForm<TransactionFormInput, undefined, TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     mode: "onSubmit",
+    defaultValues: {
+      type: undefined,
+      amount: "",
+      date: "",
+    },
   });
 
   useEffect(() => {
@@ -70,6 +79,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
       reset({
         type: transaction.type,
         amount: amountAsString,
+        date: formatDateForInput(transaction.date),
       });
     }
   }, [isEditing, transaction, reset]);
@@ -86,8 +96,13 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
     }
   };
 
+  const handleClose = () => {
+    setIsEditing(false);
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={handleClose}>
       <div className="flex flex-col items-center text-center p-4 sm:p-6">
         {isEditing ? (
           <>
@@ -166,16 +181,32 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                 )}
               </div>
 
-              <DetailRow
-                label="Data e Hora"
-                value={transaction.date.toLocaleString("pt-BR", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              />
+              <div>
+                <label
+                  htmlFor="date"
+                  className="block text-sm font-medium text-gray-600 mb-1"
+                >
+                  Data da Transação
+                </label>
+                <Controller
+                  name="date"
+                  control={control}
+                  render={({ field }) => (
+                    <input
+                      type="date"
+                      {...field}
+                      className={`mt-1 block w-full rounded-md border
+                      shadow-sm h-12 px-4 bg-white text-zinc-500 
+                      ${errors.date ? "border-red-500" : "border-primary"}`}
+                    />
+                  )}
+                />
+                {errors.date && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.date.message}
+                  </p>
+                )}
+              </div>
 
               <DetailRow label="Descrição" value={transaction.description} />
 
@@ -221,8 +252,6 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                   day: "2-digit",
                   month: "2-digit",
                   year: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit",
                 })}
               />
 

@@ -24,7 +24,7 @@ export type TransactionData = {
 export type UpdateTransactionData = {
   type: TransactionType;
   amount: number;
-  // date?: Date;
+  date: Date;
 };
 
 export class Transaction {
