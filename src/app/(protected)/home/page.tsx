@@ -118,7 +118,7 @@ export default function Home() {
               <input
                 type="date"
                 {...field}
-                className={`mt-1 block w-full rounded-md border 
+                className={`mt-1 block w-full max-w-96 rounded-md border 
                   shadow-sm h-12 px-4 bg-white text-zinc-500 
                   ${errors.date ? "border-warning" : "border-primary"}`}
               />
